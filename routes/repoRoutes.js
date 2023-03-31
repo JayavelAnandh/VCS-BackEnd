@@ -109,18 +109,8 @@ router.put("/previous/:_id", async (req, res) => {
 });
 
 function currentTime() {
-  let time = new Date();
-  return (
-    time.getHours() +
-    ":" +
-    time.getMinutes() +
-    "-->" +
-    time.getDate() +
-    "-" +
-    time.getMonth() +
-    "-" +
-    time.getFullYear()
-  );
+  var isoDateString = new Date().toISOString();
+  return isoDateString;
 }
 
 export const repoRoutes = router;
