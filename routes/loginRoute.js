@@ -20,9 +20,10 @@ router.post("/",async(req,res)=>{
         }
 
         const token = await generateAuthToken(userToLogin._id);
-        res.status(200).send({AuthToken:token,message:"Successfully LoggedIn"})
+        res.status(200).send({AuthToken:token,userName:userToLogin.userName,message:"Successfully LoggedIn"})
     } catch (error) {
-        res.status(500).send();
+        console.log(error)
+        res.status(500).send(error);
     }
 });
 export const logInRoutes = router;

@@ -12,8 +12,9 @@ router.post("/",async(req,res)=>{
             return res.status(400).send({message:"Email-id already exists"})
         }
 
-        const salt = bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(req.body.password,salt);
+        const salt =await bcrypt.genSalt(10);
+        const plainPasword = req.body.password.toString();
+        const hashedPassword = await bcrypt.hash(plainPasword,salt);
          newUser = await new User({
             userName:req.body.userName,
             email:req.body.email,
@@ -23,6 +24,7 @@ router.post("/",async(req,res)=>{
         const authToken = await generateAuthToken(newUser._id);
         res.status(200).send({AuthToken:authToken})
     } catch (error) {
+        console.log(error)
         res.status(500).send();
     }
 })
