@@ -10,10 +10,10 @@ router.post("/createRepo", async (req, res) => {
       createdby: req.body.createdby,
       createdat: currentTime(),
       file: req.body.file,
-      commitedat: currentTime(),
-      commitedby: req.body.commitedby,//[].concat(req.body.file)
       history:{
-
+        commitedby:req.body.commitedby,
+        commitedat: currentTime(),
+        content:req.body.file
       }
     }).save();
     res.status(200).send(newRepo);
@@ -48,13 +48,16 @@ router.get("/:_id", async (req, res) => {
 router.put("/edit/:_id", async (req, res) => {
   try {
     const getData = await Repository.findOne({ _id: req.params });
+    let newObject = {
+        commitedat:currentTime(),
+        commitedby:req.body.commitedby,
+        content:req.body.file,
+    }
     let updatedData= await Repository.findOneAndUpdate(
       { _id: req.params },
       {
-        history: [].concat(req.body.file, getData.history),
+        history: [].concat(newObject, getData.history),
         file: req.body.file,
-        commitedat: currentTime(),
-        commitedby: req.body.commitedby,
       }
     );
     // let updatedData = await Repository.findOne({ _id: req.params });
@@ -89,18 +92,16 @@ router.put("/previous/:_id", async (req, res) => {
         .send({ response: "This repository has no previous commits" });
     }
     let arrayToUpdate = repoToBeReverted.history;
-    let previousCommit = arrayToUpdate.pop();
+    let previousCommit = arrayToUpdate.shift();
 
     let historyData = await Repository.findOneAndUpdate(
       { _id: req.params },
-      { history: arrayToUpdate }
+      {file: arrayToUpdate[0].content,
+        history: arrayToUpdate }
     );
-    let fileData = await Repository.findOneAndUpdate(
-      { _id: req.params },
-      { file: previousCommit }
-    );
-
-    res.status(201).send({ response: "File Reverted to previous commit" });
+    
+        let updatedData = await Repository.findOne({ _id: req.params })
+    res.status(201).send({ response: "File Reverted to previous commit" ,updatedData});
   } catch (error) {
     console.log(error);
     res.status(500).send();

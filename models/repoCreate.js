@@ -19,18 +19,17 @@ const repoSchema = new mongoose.Schema(
             type:String,
             required:true,
         },
-        history:{
-            commitedby:{
+        history:[
+            {commitedby:{
                 type:String,
             },
             commitedat:{
                 type:String
             },
-            commits:{
-                type:Array,
-                default:[]
-            }
-        }
+            content:{
+                type:String,
+            }}
+        ]
     }
 )
 const generateAuthToken = (id)=>{
